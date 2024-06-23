@@ -12,7 +12,10 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Base(object):
     def setupUi(self, Base):
         Base.setObjectName("Base")
-        Base.resize(1066, 742)
+        Base.resize(1000, 800)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        Base.setFont(font)
         self.horizontalLayout = QtWidgets.QHBoxLayout(Base)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.widget_7 = QtWidgets.QWidget(parent=Base)
@@ -56,10 +59,9 @@ class Ui_Base(object):
         self.verticalLayout.addWidget(self.label)
         self.plainTextEdit = QtWidgets.QPlainTextEdit(parent=self.widget_2)
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(12)
         self.plainTextEdit.setFont(font)
         self.plainTextEdit.setLineWrapMode(QtWidgets.QPlainTextEdit.LineWrapMode.WidgetWidth)
-        self.plainTextEdit.setPlainText("")
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.verticalLayout.addWidget(self.plainTextEdit)
         self.verticalLayout_7.addWidget(self.widget_2)
@@ -134,6 +136,9 @@ class Ui_Base(object):
         self.chooses.setItemText(2, _translate("Base", "凸包(蛮力)"))
         self.chooses.setItemText(3, _translate("Base", "凸包(Graham\'s scan)"))
         self.label.setText(_translate("Base", "点"))
+        self.plainTextEdit.setPlainText(_translate("Base", "1 3\n"
+"4 2\n"
+"5 7"))
         self.plainTextEdit.setPlaceholderText(_translate("Base", "使用空格隔开坐标 使用换行隔开点 "))
         self.start.setText(_translate("Base", "开始"))
         self.pre_step.setText(_translate("Base", "上一步"))

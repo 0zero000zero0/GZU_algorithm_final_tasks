@@ -1,8 +1,8 @@
 import itertools
-class convex_hull_solver:
+from utils.solver import sovler
+class convex_hull_solver(sovler):
     def __init__(self):
-
-        self.steps = []
+        super().__init__()
 
     def is_left_turn(self, p1, p2, p3):
         return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) > 0
@@ -24,6 +24,3 @@ class convex_hull_solver:
 
     def graham_scan(self):
         pass
-
-    def clear(self):
-        self.steps=[]

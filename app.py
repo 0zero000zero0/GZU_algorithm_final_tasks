@@ -13,5 +13,5 @@ if __name__ == '__main__':
     main_window.setCentralWidget(ui)
     main_window.show()
     main_window.setWindowTitle("几何:最近点对与凸包")
-    main_window.setGeometry(400, 200, 1066, 742)
+    main_window.setGeometry(400, 200, 1000, 800)
     sys.exit(app.exec())

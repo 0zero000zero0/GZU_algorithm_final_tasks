@@ -1,8 +1,8 @@
 import numpy as np
-
-class cloest_pair_points_solver:
+from utils.solver import sovler
+class cloest_pair_points_solver(sovler):
     def __init__(self) -> None:
-        self.steps = []
+        super().__init__()
 
     def distance(self,p1, p2):
         return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
@@ -20,6 +20,7 @@ class cloest_pair_points_solver:
                     min_dist = dist
                     closest_pair = (points[i], points[j])
 
+        self.result.append((closest_pair, min_dist))
         return closest_pair, min_dist
 
     def recursive(self,points):
@@ -72,6 +73,7 @@ class cloest_pair_points_solver:
                     min_dist = dist
                     closest_pair = (strip[i], strip[j])
 
+        self.result.append((closest_pair, min_dist))
         return closest_pair, min_dist
 
 
@@ -79,8 +81,7 @@ class cloest_pair_points_solver:
         points.sort(key=lambda point: point[0])
         return self.recursive(points)
 
-    def clear(self):
-        self.steps = []
+
 
 if __name__ == '__main__':
     points = np.array([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5]])
