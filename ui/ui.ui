@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Base</class>
+ <widget class="QWidget" name="Base">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1066</width>
+    <height>742</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,1">
+   <item>
+    <widget class="QWidget" name="widget_7" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_8" stretch="3,1">
+      <item>
+       <widget class="QGraphicsView" name="graphicsView"/>
+      </item>
+      <item>
+       <widget class="QPlainTextEdit" name="result">
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="lineWrapMode">
+         <enum>QPlainTextEdit::WidgetWidth</enum>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+        <property name="plainText">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>这里将会显示过程与最后的结果</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="options" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QComboBox" name="chooses">
+        <item>
+         <property name="text">
+          <string>最近点对(蛮力)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>最近点对(分治)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>凸包(蛮力)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>凸包(Graham's scan)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string extracomment="使用空格隔开坐标 使用换行隔开点">点</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPlainTextEdit" name="plainTextEdit">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::WidgetWidth</enum>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string extracomment="使用空格隔开坐标 使用换行隔开点">使用空格隔开坐标 使用换行隔开点 </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QPushButton" name="start">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>开始</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_4" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="pre_step">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>上一步</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_3" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="next_step">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>下一步</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_6" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QPushButton" name="clear">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>清空</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_5" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QPushButton" name="quit">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>退出</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
