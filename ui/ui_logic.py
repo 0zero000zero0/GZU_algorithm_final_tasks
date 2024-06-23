@@ -20,6 +20,13 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.lines=[]
         self.rects=[]
 
+    def __str__(self) -> str:
+        print(f"Points:")
+        for point in self.points:
+            print(f"({point[0]}, {point[1]})")
+        print("=====================================")
+        return ""
+
     def ui_init(self):
         self.start.clicked.connect(self.start_clicked)
         self.quit.clicked.connect(self.quit_clicked)
@@ -38,7 +45,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.y_range = self.y_max - self.y_min-1
         # 绘制二维坐标系
         self.draw_coordinate_system()
-
+# ======================================================================
     def draw_coordinate_system(self):
         # 场景范围
         self.scene.setSceneRect(
@@ -108,8 +115,6 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         )
         return (screen_x, screen_y)
 
-
-
     #画点
     def draw_point(self, p, color=QtCore.Qt.GlobalColor.red, radius=4):
         screen_x, screen_y = self.convert_coordinates(p)
@@ -143,25 +148,36 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         rectangle.setPen(pen)
         self.scene.addItem(rectangle)
         self.rects.append(rectangle)
-
-
-
-    def __str__(self) -> str:
-        print(f"Points:")
+        self.draw_coordinate_system()
+        #测试，传入点
+        # self.draw_point([1, 1])
+        # self.draw_line([2, 2], [6, 4])
+        # self.draw_rectangle([3, 2], [4, 1])
         for point in self.points:
-            print(f"({point[0]}, {point[1]})")
-        print("=====================================")
-        return ""
+            self.draw_point(point)
+        return
+# ======================================================================
+    def quit_clicked(self):
+        sys.exit()
+
+    def clear_clicked(self):
+        self.plainTextEdit.clear()
+        self.result.clear()
+        if self.solver is not None:
+            self.solver.clear()
+        self.scene.clear()
 
     def start_clicked(self):
         self.points = self.plainTextEdit.toPlainText().strip()
         self.points = self.points.split("\n")
         if len(self.points) > 2:
             self.points = [point.strip().split() for point in self.points]
-            self.points = [(float(point[0]), float(point[1])) for point in self.points]
+            self.points = [(float(point[0]), float(point[1]))
+                           for point in self.points]
             print(self)
-            #选择的算法
+            # 选择的算法
             self.choose = self.chooses.currentIndex()
+            # 0:最近点对(蛮力) 1:最近点对(递归) 2:凸包(蛮力) 3:凸包(扫描)
             match self.choose:
                 case 0:
                     self.solver = cloest_pair_points_solver()
@@ -182,38 +198,11 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             # self.please_input.setText("请至少输入两点")
             # self.please_input.show()
             pass
-
-        self.draw_coordinate_system()
-        #测试，传入点
-        # self.draw_point([1, 1])
-        # self.draw_line([2, 2], [6, 4])
-        # self.draw_rectangle([3, 2], [4, 1])
-        for point in self.points:
-            self.draw_point(point)
-        return
-
-    def quit_clicked(self):
-        sys.exit()
-
-    def clear_clicked(self):
-        self.plainTextEdit.clear()
-        self.result.clear()
-        if self.solver is not None:
-            self.solver.clear()
-        self.scene.clear()
-
     def pre_step_clicked(self):
         try:
-            self.solver.current_step -= 1
-            states = self.solver.steps[self.solver.current_step]
-            p1 = (states[0][0], states[0][1])
-            p2 = (states[1][0], states[1][1])
             match self.choose:
                 case 0:
-                    self.result.appendPlainText(
-                        f"点({p1[0],p1[1]})和点{p2[0],p2[1]}的距离为{states[2]}")
-                    self.scene.removeItem(self.lines[-1])
-                    self.lines.pop()
+                    self.case0pre()
                     pass
                 case 1:
                     pass
@@ -227,19 +216,14 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
 
         except IndexError:
 
-            self.messge.setText('已经是开始了')
+            self.messge.setText('已经是最开始了')
             self.messge.show()
         pass
     def next_step_clicked(self):
         try:
-            states = self.solver.steps[self.solver.current_step]
-            p1 = (states[0][0], states[0][1])
-            p2 = (states[1][0], states[1][1])
             match self.choose:
                 case 0:
-                    self.result.appendPlainText(
-                        f"点({p1[0],p1[1]})和点{p2[0],p2[1]}的距离为{states[2]}")
-                    self.draw_line(p1,p2)
+                    self.case0next()
                     pass
                 case 1:
                     pass
@@ -255,3 +239,22 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             self.messge.setText('已经是最后一步')
             self.messge.show()
         pass
+
+# ======================================================================
+    def case0next(self):
+        states = self.solver.steps[self.solver.current_step]
+        p1 = (states[0][0], states[0][1])
+        p2 = (states[1][0], states[1][1])
+        self.result.appendPlainText(
+            f"点({p1[0],p1[1]})和点{p2[0],p2[1]}的距离为{states[2]}")
+        self.draw_line(p1, p2)
+
+    def case0pre(self):
+        self.solver.current_step -= 1
+        states = self.solver.steps[self.solver.current_step]
+        p1 = (states[0][0], states[0][1])
+        p2 = (states[1][0], states[1][1])
+        self.result.appendPlainText(
+            f"点({p1[0],p1[1]})和点{p2[0],p2[1]}的距离为{states[2]}")
+        self.scene.removeItem(self.lines[-1])
+        self.lines.pop()
