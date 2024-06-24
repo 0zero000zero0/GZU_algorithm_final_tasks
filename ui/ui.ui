@@ -103,9 +103,13 @@
             <enum>QPlainTextEdit::WidgetWidth</enum>
            </property>
            <property name="plainText">
-            <string>1 3
-4 2
-5 7</string>
+            <string>1 4
+2 1
+4 9
+3 2
+7 1
+-2 4
+-3 2</string>
            </property>
            <property name="placeholderText">
             <string extracomment="使用空格隔开坐标 使用换行隔开点">使用空格隔开坐标 使用换行隔开点 </string>

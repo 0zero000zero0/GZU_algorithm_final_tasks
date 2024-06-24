@@ -3,6 +3,7 @@ from utils.solver import sovler
 class cloest_pair_points_solver(sovler):
     def __init__(self) -> None:
         super().__init__()
+        self.mids=[]
 
     def distance(self,p1, p2):
         return np.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
@@ -10,7 +11,6 @@ class cloest_pair_points_solver(sovler):
     def brute_force(self,points):
         min_dist = float('inf')
         closest_pair = (None, None)
-
         n = len(points)
         for i in range(n):
             for j in range(i + 1, n):
@@ -23,9 +23,9 @@ class cloest_pair_points_solver(sovler):
         self.result.append((closest_pair, min_dist))
         return closest_pair, min_dist
 
-    def recursive(self,points):
+    def divide_and_conquer(self,points):
         n = len(points)
-        if n <= 3:
+        if n < 3:
             # 使用蛮力法解决小规模问题
             min_dist = float('inf')
             closest_pair = (None, None)
@@ -36,15 +36,17 @@ class cloest_pair_points_solver(sovler):
                     if dist < min_dist:
                         min_dist = dist
                         closest_pair = (points[i], points[j])
+            self.result.append((closest_pair, min_dist))
             return closest_pair, min_dist
-
-        # 分治法
         mid = n // 2
         mid_point = points[mid]
-
+        self.mids.append(mid_point)
+        left_points = points[:mid]
+        right_points = points[mid:]
         # 递归解决左右子集
-        left_closest_pair, left_min_dist = self.recursive(points[:mid])
-        right_closest_pair, right_min_dist = self.recursive(points[mid:])
+        left_closest_pair, left_min_dist = self.divide_and_conquer(left_points)
+        right_closest_pair, right_min_dist = self.divide_and_conquer(
+            right_points)
 
         # 找到左右子集的最近点对
         if left_min_dist < right_min_dist:
@@ -62,7 +64,6 @@ class cloest_pair_points_solver(sovler):
 
         # 以y坐标排序
         strip.sort(key=lambda point: point[1])
-
         for i in range(len(strip)):
             for j in range(i + 1, len(strip)):
                 if strip[j][1] - strip[i][1] >= min_dist:
@@ -79,7 +80,7 @@ class cloest_pair_points_solver(sovler):
 
     def closest_pair(self,points):
         points.sort(key=lambda point: point[0])
-        return self.recursive(points)
+        return self.divide_and_conquer(points)
 
 
 

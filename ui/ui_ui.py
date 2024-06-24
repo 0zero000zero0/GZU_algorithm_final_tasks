@@ -136,9 +136,13 @@ class Ui_Base(object):
         self.chooses.setItemText(2, _translate("Base", "凸包(蛮力)"))
         self.chooses.setItemText(3, _translate("Base", "凸包(Graham\'s scan)"))
         self.label.setText(_translate("Base", "点"))
-        self.plainTextEdit.setPlainText(_translate("Base", "1 3\n"
-"4 2\n"
-"5 7"))
+        self.plainTextEdit.setPlainText(_translate("Base", "1 4\n"
+"2 1\n"
+"4 9\n"
+"3 2\n"
+"7 1\n"
+"-2 4\n"
+"-3 2"))
         self.plainTextEdit.setPlaceholderText(_translate("Base", "使用空格隔开坐标 使用换行隔开点 "))
         self.start.setText(_translate("Base", "开始"))
         self.pre_step.setText(_translate("Base", "上一步"))
