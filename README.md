@@ -10,6 +10,7 @@
   - Graham's scan 法
 
 项目结构
+
 ```
 Project
 │  .gitignore
@@ -47,3 +48,10 @@ Utils 文件夹中:
 - solver 是解决方案的基类
 - closest_points.py 是最近点对算法的实现,实现了蛮力法和分治法，使用的是继承`solver`实现了`cloest_pair_points_solver`
 - convex_hull.py 是凸包算法的实现,实现了蛮力法和 Graham's scan 法，使用的是继承`solver`实现了`convex_hull_solver`
+
+### RUN
+
+```bash
+pip install -r requirements.txt
+python app.py
+```
