@@ -21,6 +21,7 @@ class convex_hull_solver(sovler):
                 hull.append((i, j))
             self.steps.append((i, j, all_left))
         return hull
-
+    
     def graham_scan(self):
         pass
+    

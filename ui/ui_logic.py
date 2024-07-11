@@ -13,7 +13,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         super().__init__()
         self.setupUi(self)  # 初始化UI组件
         self.ui_init()  # 自定义的初始化方法
-        self.points = []
+        self.points = [] #[[1,3],[2,4]]
         self.messge = QMessageBox()
         self.messge.resize(200, 100)
         self.solver = None
@@ -90,7 +90,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             self.scene.addLine(
                 0, screen_y, self.graphics_view_width, screen_y, grid_pen
             )
-
+            
         # 刻度和标签
         font = QtGui.QFont("微软雅黑", 8)
         for x in range(self.x_min, self.x_max + 1):
@@ -122,7 +122,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         return (screen_x, screen_y)
 
     # 画点
-    def draw_point(self, p: list[list[float]], color=QtCore.Qt.GlobalColor.red, radius=4):
+    def draw_point(self, p: list[float], color=QtCore.Qt.GlobalColor.red, radius=4):
         screen_x, screen_y = self.convert_coordinates(p)
         ellipse = QtWidgets.QGraphicsEllipseItem(
             screen_x - radius, screen_y - radius, 2 * radius, 2 * radius
@@ -132,7 +132,8 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.points_.append(ellipse)
 
     # 画线
-    def draw_line(self, p1: list[list[float]], p2: list[list[float]], color=QtCore.Qt.GlobalColor.blue, width=2):
+    def draw_line(self, p1: list[float], p2: list[float], color=QtCore.Qt.GlobalColor.blue, width=2):
+        #p1=[1,3]
         screen_x1, screen_y1 = self.convert_coordinates(p1)
         screen_x2, screen_y2 = self.convert_coordinates(p2)
         pen = QtGui.QPen(color, width)
