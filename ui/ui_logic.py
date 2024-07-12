@@ -1,3 +1,4 @@
+import time
 from functools import partial
 from PyQt6 import QtWidgets, QtCore, QtGui
 import sys
@@ -6,6 +7,7 @@ from PyQt6.QtWidgets import QMessageBox
 from utils.closest_poionts import cloest_pair_points_solver
 from utils.convex_hull import convex_hull_solver
 from typing import overload
+from time import perf_counter_ns as pcns
 
 
 class main_ui(QtWidgets.QWidget, Ui_Base):
@@ -207,14 +209,22 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             match self.choose:
                 case 0:
                     self.solver = cloest_pair_points_solver()
+                    start_time = pcns()
                     self.solver.brute_force(self.points)
+                    end_time = pcns()
+                    self.result.appendPlainText(
+                        f"算法耗时 {(end_time-start_time)*1e-6} 秒")
                     self.result.appendHtml('<font color="red">结果:</font>')
                     self.result.appendHtml(
                         f'最近点对为<font color="red">{self.solver.result[0][0][0]}</font>和<font color="red">{self.solver.result[0][0][1]}</font>,距离为 <font color="red">{self.solver.result[0][1]}</font>'
                     )
                 case 1:
                     self.solver = cloest_pair_points_solver()
+                    start_time = pcns()
                     self.solver.closest_pair(self.points)
+                    end_time = pcns()
+                    self.result.appendPlainText(
+                        f"算法耗时 {(end_time-start_time)*1e-6} 秒")
                     self.result.appendHtml('<font color="red">结果:</font>')
                     self.result.appendHtml(
                         f'最近点对为<font color="red">{self.solver.result[0][0][0]}</font>和<font color="red">{self.solver.result[0][0][1]}</font>,距离为 <font color="red">{self.solver.result[0][1]}</font>'
@@ -227,12 +237,25 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                             f"分治线为 x={mid[0]}")
                 case 2:
                     self.solver = convex_hull_solver()
+                    start_time = pcns()
                     self.solver.brute_force(self.points)
-                    self.result.appendHtml('<font color="red">结果:</font>')
-
+                    end_time = pcns()
+                    self.result.appendPlainText(
+                        f"算法耗时 {(end_time-start_time)*1e-6} 秒")
+                    self.result.appendHtml('<font color="red">凸包点为</font>')
+                    for i in range(len(self.solver.result)):
+                        self.result.appendPlainText(f"{self.solver.result[i]}")
+                        self.draw_line(
+                            self.solver.result[i][0], self.solver.result[i][1], color=QtCore.Qt.GlobalColor.black)
+                    # self.draw_line(
+                    #     self.solver.result[-1], self.solver.result[0], color=QtCore.Qt.GlobalColor.black)
                 case 3:
                     self.solver = convex_hull_solver()
+                    start_time = pcns()
                     self.solver.divide_and_conquer(self.points)
+                    end_time = pcns()
+                    self.result.appendPlainText(
+                        f"算法耗时 {(end_time-start_time)*1e-6} 秒")
                     for i in range(len(self.solver.result)-1):
                         self.draw_line(
                             self.solver.result[i], self.solver.result[i+1], color=QtCore.Qt.GlobalColor.black)
@@ -261,6 +284,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                     self.case1pre()
                     pass
                 case 2:
+                    self.case2pre()
                     pass
                 case 3:
                     self.case3pre()
@@ -283,6 +307,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                     self.case1next()
                     pass
                 case 2:
+                    self.case2next()
                     pass
                 case 3:
                     self.case3next()
@@ -337,6 +362,24 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.scene.removeItem(self.lines[-1])
         self.lines.pop()
 
+    def case2next(self):
+        states = self.solver.steps[self.solver.current_step]
+        p1, p2, is_all_on_one_side = states
+        if is_all_on_one_side == True:
+            self.result.appendHtml(
+                f"检查其他点是否在线段 {p1}-{p2} 的同一测:<font color='red'>{is_all_on_one_side}</font>"
+            )
+            self.draw_line(p1, p2,color=QtCore.Qt.GlobalColor.red)
+        else:
+            self.result.appendHtml(
+                f"检查其他点是否在线段 {p1}-{p2} 的同一测:={is_all_on_one_side}")
+            self.draw_line(p1, p2)
+
+    def case2pre(self):
+        self.solver.current_step -= 1
+        self.scene.removeItem(self.lines[-1])
+        self.lines.pop()
+
     def case3next(self):
         current_state = self.solver.steps[self.solver.current_step]
         p1, p2, isHull = current_state
@@ -353,7 +396,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.scene.removeItem(self.lines[-1])
         self.lines.pop()
         current_state = self.solver.steps[self.solver.current_step]
-        p1, p2 ,isHull= current_state
+        p1, p2, isHull = current_state
         if isHull is False:
             self.draw_line(p1, p2, color=QtCore.Qt.GlobalColor.blue)
             self.result.appendPlainText(f"分治线为 {p1}-{p2} ")

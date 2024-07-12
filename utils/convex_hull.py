@@ -10,21 +10,40 @@ class convex_hull_solver(sovler):
         '''
         判断p3是否在直线p1p2的左侧
         '''
-        return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) > 0
+        return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) >= 0
+
+    def is_right_turn(self, p1, p2, p3):
+        '''
+        判断p3是否在直线p1p2的右侧
+        '''
+        return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) <= 0
 
     def brute_force(self, points):
         hull = []
         n = len(points)
-        for i, j in itertools.combinations(range(n), 2):
-            all_left = True
-            for k in range(n):
+
+        def is_all_left(i, j):
+            for k in points:
                 if k != i and k != j:
-                    if not self.is_left_turn(points[i], points[j], points[k]):
-                        all_left = False
-                        break
-            if all_left:
-                hull.append((i, j))
-            self.steps.append((i, j, all_left))
+                    if not self.is_left_turn(i, j, k):
+                        return False
+            return True
+
+        def is_all_right(i, j):
+            for k in points:
+                if k != i and k != j:
+                    if not self.is_right_turn(i, j, k):
+                        return False
+            return True
+        for i, j in itertools.combinations(points, 2):
+            all_left = is_all_left(i, j)
+            all_right = is_all_right(i, j)
+            self.steps.append((i, j, all_left or all_right))
+            if all_left or all_right:
+                hull.append((i,j))
+        # hull = list(set(tuple(p) for p in hull))  # 去除重复的点
+
+        self.result = hull
         return hull
 
     def divide_and_conquer(self, points):
