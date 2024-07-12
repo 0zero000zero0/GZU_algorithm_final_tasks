@@ -18,7 +18,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,0">
    <item>
     <widget class="QWidget" name="widget_7" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_8" stretch="3,1">
@@ -51,7 +51,7 @@
    </item>
    <item>
     <widget class="QWidget" name="options" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_7">
+     <layout class="QVBoxLayout" name="verticalLayout_10">
       <item>
        <widget class="QComboBox" name="chooses">
         <item>
@@ -71,7 +71,7 @@
         </item>
         <item>
          <property name="text">
-          <string>凸包(Graham's scan)</string>
+          <string>凸包(分治法)</string>
          </property>
         </item>
        </widget>
@@ -167,6 +167,24 @@
            </property>
            <property name="text">
             <string>下一步</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="toend" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QPushButton" name="start_3">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>结果</string>
            </property>
           </widget>
          </item>

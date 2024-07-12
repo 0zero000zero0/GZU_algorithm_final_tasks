@@ -13,13 +13,15 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         super().__init__()
         self.setupUi(self)  # 初始化UI组件
         self.ui_init()  # 自定义的初始化方法
-        self.points = [] #[[1,3],[2,4]]
+        self.bound()
+        self.points = []  # [[1,3],[2,4]]
         self.messge = QMessageBox()
         self.messge.resize(200, 100)
         self.solver = None
         self.points_ = []
         self.lines = []
         self.rects = []
+        self.builded = False  # 是否已经构建坐标系
 
     def __str__(self) -> str:
         print(f"Points:")
@@ -28,22 +30,29 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         print("=====================================")
         return ""
 
-    def ui_init(self):
+    def bound(self):
         self.start.clicked.connect(self.start_clicked)
         self.quit.clicked.connect(self.quit_clicked)
         self.clear.clicked.connect(self.clear_clicked)
         self.pre_step.clicked.connect(self.pre_step_clicked)
         self.next_step.clicked.connect(self.next_step_clicked)
+
+    def build(self):
+
+        pass
+
+    def ui_init(self, x_min=-10, x_max=10, y_min=-10, y_max=10):
         self.scene = QtWidgets.QGraphicsScene()
         self.graphicsView.setScene(self.scene)
         self.graphicsView.resize(800, 600)
+        self.margin = 3  # 从点集中读取范围后，控制留白大小
         # 坐标范围
-        self.x_min, self.x_max = -10, 12
-        self.y_min, self.y_max = -10, 12
+        self.x_min, self.x_max = int(x_min-self.margin), int(x_max+self.margin)
+        self.y_min, self.y_max = int(y_min-self.margin), int(y_max+self.margin)
         self.graphics_view_width = self.graphicsView.width()
         self.graphics_view_height = self.graphicsView.height()
-        self.x_range = self.x_max - self.x_min - 2
-        self.y_range = self.y_max - self.y_min - 2
+        self.x_range = self.x_max - self.x_min
+        self.y_range = self.y_max - self.y_min
         # 绘制二维坐标系
         self.draw_coordinate_system()
 
@@ -90,7 +99,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             self.scene.addLine(
                 0, screen_y, self.graphics_view_width, screen_y, grid_pen
             )
-            
+
         # 刻度和标签
         font = QtGui.QFont("微软雅黑", 8)
         for x in range(self.x_min, self.x_max + 1):
@@ -133,7 +142,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
 
     # 画线
     def draw_line(self, p1: list[float], p2: list[float], color=QtCore.Qt.GlobalColor.blue, width=2):
-        #p1=[1,3]
+        # p1=[1,3]
         screen_x1, screen_y1 = self.convert_coordinates(p1)
         screen_x2, screen_y2 = self.convert_coordinates(p2)
         pen = QtGui.QPen(color, width)
@@ -141,7 +150,9 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
             screen_x1, screen_y1, screen_x2, screen_y2)
         line.setPen(pen)
         self.scene.addItem(line)
-        self.lines.append(line)
+        if line not in self.lines:
+            self.lines.append(line)
+        print(f"画线{p1}到{p2}")
 
     # 画矩形
     def draw_rectangle(self, p1: list[list[float]], p2: list[list[float]], color=QtCore.Qt.GlobalColor.green, width=2):
@@ -168,14 +179,26 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         self.scene.clear()
 
     def start_clicked(self):
-        self.draw_coordinate_system()
+        # self.draw_coordinate_system()
         self.points = self.plainTextEdit.toPlainText().strip()
         self.points = self.points.split("\n")
+
         if len(self.points) > 1:
             self.points = [point.strip().split() for point in self.points]
             self.points = [(float(point[0]), float(point[1]))
                            for point in self.points]
             print(self)
+
+            # TODO :实现根据点集来自适应构建坐标系范围
+            # points_xs = [p[0]for p in self.points]
+            # max_x = max(points_xs)
+            # min_x = min(points_xs)
+            # points_ys = [p[1]for p in self.points]
+            # max_y = max(points_ys)
+            # min_y = min(points_ys)
+            # self.ui_init(x_max=max_x, x_min=min_x,
+            #              y_min=min_y, y_max=max_y)  # 自定义的初始化方法
+
             for point in self.points:
                 self.draw_point(point)
             # 选择的算法
@@ -205,9 +228,21 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                 case 2:
                     self.solver = convex_hull_solver()
                     self.solver.brute_force(self.points)
+                    self.result.appendHtml('<font color="red">结果:</font>')
+
                 case 3:
                     self.solver = convex_hull_solver()
-                    self.solver.graham_scan(self.points)
+                    self.solver.divide_and_conquer(self.points)
+                    for i in range(len(self.solver.result)-1):
+                        self.draw_line(
+                            self.solver.result[i], self.solver.result[i+1], color=QtCore.Qt.GlobalColor.black)
+                    self.draw_line(
+                        self.solver.result[-1], self.solver.result[0], color=QtCore.Qt.GlobalColor.black)
+                    self.lines = []
+                    self.result.appendHtml('<font color="red">凸包点为:</font>')
+                    for point in self.solver.result:
+                        self.result.appendHtml(
+                            f'<font color="red">{point}</font>')
                 case _:
                     self.messge.setText("请选择算法")
                     self.messge.show()
@@ -228,6 +263,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                 case 2:
                     pass
                 case 3:
+                    self.case3pre()
                     pass
                 case _:
                     print("error")
@@ -249,6 +285,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                 case 2:
                     pass
                 case 3:
+                    self.case3next()
                     pass
                 case _:
                     print("error")
@@ -299,3 +336,27 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
         )
         self.scene.removeItem(self.lines[-1])
         self.lines.pop()
+
+    def case3next(self):
+        current_state = self.solver.steps[self.solver.current_step]
+        p1, p2, isHull = current_state
+        if isHull is False:
+            self.draw_line(p1, p2, color=QtCore.Qt.GlobalColor.blue)
+            self.result.appendPlainText(f"分治线为 {p1}-{p2} ")
+        else:
+            self.result.appendPlainText(
+                f"线段({p1}-{p2}已经一侧没有点了，该线段为凸包的一部分")
+        pass
+
+    def case3pre(self):
+        self.solver.current_step -= 1
+        self.scene.removeItem(self.lines[-1])
+        self.lines.pop()
+        current_state = self.solver.steps[self.solver.current_step]
+        p1, p2 ,isHull= current_state
+        if isHull is False:
+            self.draw_line(p1, p2, color=QtCore.Qt.GlobalColor.blue)
+            self.result.appendPlainText(f"分治线为 {p1}-{p2} ")
+        else:
+            self.result.appendPlainText(f"线段({p1}-{p2}已经一侧没有点了，该线段为凸包的一部分")
+        pass
