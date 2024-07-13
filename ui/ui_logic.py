@@ -227,7 +227,7 @@ class main_ui(QtWidgets.QWidget, Ui_Base):
                         f"算法耗时 {(end_time-start_time)*1e-6} 秒")
                     self.result.appendHtml('<font color="red">结果:</font>')
                     self.result.appendHtml(
-                        f'最近点对为<font color="red">{self.solver.result[0][0][0]}</font>和<font color="red">{self.solver.result[0][0][1]}</font>,距离为 <font color="red">{self.solver.result[0][1]}</font>'
+                        f'最近点对为<font color="red">{self.solver.result[0][0]}</font>和<font color="red">{self.solver.result[0][1]}</font>,距离为 <font color="red">{self.solver.result[1]}</font>'
                     )
                     # 分治线
                     for mid in self.solver.mids:

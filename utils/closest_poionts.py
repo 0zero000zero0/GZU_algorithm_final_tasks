@@ -36,7 +36,8 @@ class cloest_pair_points_solver(sovler):
                     if dist < min_dist:
                         min_dist = dist
                         closest_pair = (points[i], points[j])
-            self.result.append((closest_pair, min_dist))
+            if min_dist != float('inf'):
+                self.result.append((closest_pair, min_dist))
             return closest_pair, min_dist
         mid = n // 2
         mid_point = points[mid]
@@ -47,7 +48,6 @@ class cloest_pair_points_solver(sovler):
         left_closest_pair, left_min_dist = self.divide_and_conquer(left_points)
         right_closest_pair, right_min_dist = self.divide_and_conquer(
             right_points)
-
         # 找到左右子集的最近点对
         if left_min_dist < right_min_dist:
             min_dist = left_min_dist
@@ -55,7 +55,6 @@ class cloest_pair_points_solver(sovler):
         else:
             min_dist = right_min_dist
             closest_pair = right_closest_pair
-
         # 检查跨越分割线的点对
         strip = []
         for i in range(n):
@@ -73,14 +72,17 @@ class cloest_pair_points_solver(sovler):
                 if dist < min_dist:
                     min_dist = dist
                     closest_pair = (strip[i], strip[j])
-
         self.result.append((closest_pair, min_dist))
         return closest_pair, min_dist
 
 
     def closest_pair(self,points):
         points.sort(key=lambda point: point[0])
-        return self.divide_and_conquer(points)
+        result= self.divide_and_conquer(points)
+        self.result.sort(key=lambda x: x[1])
+        self.result=self.result[0]
+        return result
+
 
 
 

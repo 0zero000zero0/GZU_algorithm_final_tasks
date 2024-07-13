@@ -1,27 +1,26 @@
 import itertools
 from utils.solver import sovler
-
+import sys
 
 class convex_hull_solver(sovler):
     def __init__(self):
         super().__init__()
 
-    def is_left_turn(self, p1, p2, p3):
+    def is_left_turn(self, a, b, c):
         '''
-        判断p3是否在直线p1p2的左侧
+        判断c是否在直线ab的左侧
         '''
-        return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) >= 0
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) > 0
 
-    def is_right_turn(self, p1, p2, p3):
+    def is_right_turn(self, a, b, c):
         '''
         判断p3是否在直线p1p2的右侧
         '''
-        return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]) <= 0
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) < 0
 
     def brute_force(self, points):
         hull = []
         n = len(points)
-
         def is_all_left(i, j):
             for k in points:
                 if k != i and k != j:
@@ -41,8 +40,6 @@ class convex_hull_solver(sovler):
             self.steps.append((i, j, all_left or all_right))
             if all_left or all_right:
                 hull.append((i,j))
-        # hull = list(set(tuple(p) for p in hull))  # 去除重复的点
-
         self.result = hull
         return hull
 
@@ -59,7 +56,7 @@ class convex_hull_solver(sovler):
 
         def find_hull(points, p1, p2):
             # 在p1p2左侧的点集找凸包
-            if not points:
+            if len(points)==0:
                 self.steps.append((p1, p2, True))
                 return []
             farthest_point = max(points, key=lambda p: distance(p, p1, p2))
